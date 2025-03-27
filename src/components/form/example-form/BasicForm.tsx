@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Form from "../Form";
 import Input from "../input/InputField";
 import Button from "../../ui/button/Button";
@@ -11,7 +10,6 @@ export default function BasicForm() {
     console.log("Form submitted:");
   };
   return (
-    <ComponentCard title="Basic Form">
       <Form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
@@ -33,6 +31,5 @@ export default function BasicForm() {
           </div>
         </div>
       </Form>
-    </ComponentCard>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Form from "../Form";
 import Label from "../Label";
 import Input from "../input/InputField";
@@ -29,7 +28,6 @@ export default function ExampleFormOne() {
     console.log("Message:", value);
   };
   return (
-    <ComponentCard title="Example Form">
       <Form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="col-span-2 sm:col-span-1">
@@ -76,6 +74,5 @@ export default function ExampleFormOne() {
           </div>
         </div>
       </Form>
-    </ComponentCard>
   );
 }
