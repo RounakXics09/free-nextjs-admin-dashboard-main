@@ -6,14 +6,18 @@ import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import { CalenderIcon } from "@/icons";
 import { useDropzone } from "react-dropzone";
+import Button from "@/components/ui/button/Button";
 
 export default function FormElements() {
 
-  const [message, setMessage] = useState("");
-  const [messageTwo, setMessageTwo] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [image, setImage] = useState("");
 
   const onDrop = (acceptedFiles: File[]) => {
     console.log("Files dropped:", acceptedFiles);
+    setImage(acceptedFiles[0].name);
     // Handle file uploads here
   };
 
@@ -27,6 +31,7 @@ export default function FormElements() {
     },
   });
 
+
   return (
     <div>
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
@@ -34,7 +39,13 @@ export default function FormElements() {
           <div className="space-y-6">
             <div>
               <Label>Blog Title</Label>
-              <Input type="text" />
+              <Input
+                type="text"
+                id="title"
+                name="title"
+                defaultValue={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="datePicker">Blog Date</Label>
@@ -43,7 +54,8 @@ export default function FormElements() {
                   type="date"
                   id="datePicker"
                   name="datePicker"
-                  onChange={(e) => console.log(e.target.value)}
+                  defaultValue={date}
+                  onChange={(e) => setDate(e.target.value)}
                 />
                 <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
                   <CalenderIcon />
@@ -53,9 +65,10 @@ export default function FormElements() {
             <div>
               <Label>Blog Description</Label>
               <TextArea
-                value={message}
-                onChange={(value) => setMessage(value)}
+                placeholder="Write your message here..."
                 rows={6}
+                value={description}
+                onChange={(e) => setDescription(e)}
               />
             </div>
           </div>
@@ -110,6 +123,21 @@ export default function FormElements() {
               </div>
             </form>
           </div>
+          <div>
+              <Button
+                size="md"
+                variant="primary"
+                onClick={() => {
+                  console.log("Title:", title);
+                  console.log("Description:", description);
+                  console.log("Date:", date);
+                  console.log("Image:", image);
+                }
+                }
+              >
+                Submit
+              </Button>
+            </div>
         </div>
       </div>
     </div>
