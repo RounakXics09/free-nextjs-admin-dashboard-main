@@ -7,18 +7,29 @@ import Label from "@/components/form/Label";
 import { CalenderIcon } from "@/icons";
 import { useDropzone } from "react-dropzone";
 import Button from "@/components/ui/button/Button";
+import axios from "axios";
 
 export default function FormElements() {
-
+  const API_URL = "http://localhost:1337/api/blogs";
+  const UPLOAD_URL = "http://localhost:1337/api/upload";
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState({});
 
-  const onDrop = (acceptedFiles: File[]) => {
+  const onDrop = async (acceptedFiles: File[]) => {
     console.log("Files dropped:", acceptedFiles);
-    setImage(acceptedFiles[0].name);
-    // Handle file uploads here
+    const image = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append("files", image);
+
+    const uploadResponse = await axios.post(UPLOAD_URL, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const uploadedImage = uploadResponse.data[0];
+    setImage(uploadedImage.id);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -30,6 +41,38 @@ export default function FormElements() {
       "image/svg+xml": [],
     },
   });
+
+
+  const onSubmit = async () => {
+    console.log("Title:", title);
+    console.log("Description:", description);
+    console.log("Image:", image);
+    try {
+      const response = await axios.post(
+        API_URL,
+        {
+          data: {
+            title: title,
+            description: description,
+            blog_image: image,
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("blog Created:", response.data);
+      setDescription('')
+      setImage({})
+      setTitle('')
+    } catch (error: any) {
+      console.error("Error creating blog:", error.response?.data || error.message);
+    }
+  };
+
 
 
   return (
@@ -46,21 +89,6 @@ export default function FormElements() {
                 defaultValue={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
-            </div>
-            <div>
-              <Label htmlFor="datePicker">Blog Date</Label>
-              <div className="relative">
-                <Input
-                  type="date"
-                  id="datePicker"
-                  name="datePicker"
-                  defaultValue={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                  <CalenderIcon />
-                </span>
-              </div>
             </div>
             <div>
               <Label>Blog Description</Label>
@@ -124,20 +152,14 @@ export default function FormElements() {
             </form>
           </div>
           <div>
-              <Button
-                size="md"
-                variant="primary"
-                onClick={() => {
-                  console.log("Title:", title);
-                  console.log("Description:", description);
-                  console.log("Date:", date);
-                  console.log("Image:", image);
-                }
-                }
-              >
-                Submit
-              </Button>
-            </div>
+            <Button
+              size="md"
+              variant="primary"
+              onClick={onSubmit}
+            >
+              Submit
+            </Button>
+          </div>
         </div>
       </div>
     </div>
